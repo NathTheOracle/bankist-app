@@ -60,9 +60,12 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = "";
-  movements.forEach(function (mov, i) {
+
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
     const html = `
@@ -110,7 +113,6 @@ const calcDisplaySummary = function (acc) {
     .filter((mov) => mov > 0)
     .map((deposit) => (deposit * 1.2) / 100)
     .filter((int, i, arr) => {
-      // console.log(arr);
       return int >= 1;
     })
     .reduce((acc, val) => acc + val, 0);
@@ -118,6 +120,17 @@ const calcDisplaySummary = function (acc) {
 };
 
 createUsernames(accounts);
+
+const updateUI = function (acc) {
+  //Display movements
+  displayMovements(acc.movements);
+
+  //Display balance
+  calcDisplayBalance(acc);
+
+  //Display summary
+  calcDisplaySummary(acc);
+};
 
 //Event handler
 let currentAccount;
@@ -129,21 +142,17 @@ btnLogin.addEventListener("click", function (e) {
   currentAccount = accounts.find(
     (acc) => acc.username === inputLoginUsername.value,
   );
-  console.log(currentAccount);
+  // console.log(currentAccount);
 
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     //Display ui and message
     labelWelcome.textContent = `welcome back, ${currentAccount.owner.split("")[0]}`;
     containerApp.style.opacity = 100;
 
-    //Display movements
-    displayMovements(currentAccount.movements);
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
 
-    //Display balance
-    calcDisplayBalance(currentAccount);
-
-    //Display summary
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
   }
 });
 
@@ -153,7 +162,7 @@ btnTransfer.addEventListener("click", function (e) {
   const receiverAcc = accounts.find(
     (acc) => acc.username === inputTransferTo.value,
   );
-  console.log(amount, receiverAcc);
+  inputTransferAmount.value = inputTransferTo.value = "";
 
   if (
     amount > 0 &&
@@ -161,7 +170,11 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount.balance >= amount &&
     receiverAcc?.username !== currentAccount.username
   ) {
-    console.log("Transfer valid");
+    //doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    updateUI(currentAccount);
   }
 });
 
@@ -181,156 +194,20 @@ btnLoan.addEventListener("click", function (e) {
   inputLoanAmount.value = "";
 });
 
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, true);
+});
+
 btnClose.addEventListener("click", function (e) {
   e.preventDefault();
 
   if (
-    inputCloseUsername.value === currentAccount.createUsernames &&
+    inputCloseUsername.value === currentAccount.username &&
     Number(inputClosePin.value) === currentAccount.pin
   ) {
     const index = accounts.findIndex(
       (acc) => acc.username === currentAccount.username,
     );
-    // console.log(index);
-
-    //indexof(23)
-
-    // account1.splice(index, 1);
   }
 });
-
-// const numbers = [1, 2, 3, 4, 5];
-// const total = numbers.reduce((acc, val) => {
-//   return acc + val;
-// }, 0);
-// console.log(total);
-
-// const cart = [
-//   {
-//     item: "food",
-//     price: 12000,
-//   },
-//   {
-//     item: "car",
-//     price: 1200,
-//   },
-//   {
-//     item: "shoe",
-//     price: 400,
-//   },
-//   {
-//     item: "shirt",
-//     price: 100,
-//   },
-// ];
-
-// const totalCost = cart.reduce((acc, val) => {
-//   return acc + val.price;
-// }, 0);
-
-// console.log(totalCost);
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-// const currencies = new Map([
-//   ["USD", "United States dollar"],
-//   ["EUR", "Euro"],
-//   ["GBP", "Pound sterling"],
-// ]);
-
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-// const fruit = ["Apple", "Banana", "Orange"];
-// fruit.forEach((fruit) => console.log(fruit));
-
-// const gadget = ["laptop", "phone", " mouse"];
-// gadget.forEach((gadget, index) => {
-//   console.log(`gadget ${index + 1}: ${gadget}`);
-// });
-
-// // for (let i = 0; i <= fruit.length; i++) {
-// //   if (fruit[i] === "banana") break;
-// //   console.log(fruit[i]);
-// // }
-
-// gadget.forEach(function (cur, index, arr) {
-//   console.log(cur, index, arr);
-// });
-
-// const nath = new Map();
-// nath.set("name", "Nath");
-// nath.set("occupation", "programmer");
-// console.log(nath);
-// nath.forEach((value, key) => {
-//   console.log(`${key} : ${value}`);
-// });
-
-// const ola = new Set(["food", "drink", "snacks"]);
-// ola.forEach((value, key) => {
-//   console.log(key, value);
-// });
-
-// const school = {
-//   university: "unilag",
-//   secondary: "brainfield",
-//   primary: "fitjoy",
-// };
-// // console.log(Object.entries(school));
-
-// Object.entries(school).forEach(([value, key]) => {
-//   console.log(`${key} : ${value}`);
-// });
-
-// const num = [1, 2, 3, 4, 5];
-// const double = num.map((fig) => fig * 2);
-// console.log(double);
-// console.log(num);
-
-// const car = [
-//   {
-//     make: "Toyota",
-//     model: "Camry",
-//   },
-
-//   {
-//     make: "lexus",
-//     model: "Rx359",
-//   },
-// ];
-
-// const make = car.map((car) => car.make);
-// console.log(make);
-
-// const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-// const even = numbers.filter((num) => num % 2 === 0);
-// console.log(numbers);
-// console.log(even);
-
-// const people = [
-//   {
-//     name: "Nath",
-//     age: 16,
-//   },
-//   {
-//     name: "Bolu",
-//     age: 12,
-//   },
-//   {
-//     name: "Kelvin",
-//     age: 18,
-//   },
-//   {
-//     name: "Jeffery",
-//     age: 20,
-//   },
-// ];
-
-// const adults = people.filter((people) => people.age >= 18);
-// console.log(adults);
-// console.log(people);
-
-// const random = [0, "", "boy", undefined, null, 6, "girl"];
-// const clean = random.filter(Boolean);
-// console.log(clean);
