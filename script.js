@@ -45,7 +45,7 @@ const labelSumInterest = document.querySelector(".summary__value--interest");
 const labelTimer = document.querySelector(".timer");
 
 const containerApp = document.querySelector(".app");
-const containerMovements = document.querySelector(".movements");
+const containerMovements = document.querySelector(".movements__list");
 
 const btnLogin = document.querySelector(".login__btn");
 const btnTransfer = document.querySelector(".form__btn--transfer");
@@ -69,12 +69,10 @@ const displayMovements = function (movements, sort = false) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
     const html = `
-     <div class="movements">
-        <div class="movements__row">
-          <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-          <div class="movements__date">3 days ago</div>
-          <div class="movements__value">${mov}€</div>
-        </div>
+     <div class="movements__row">
+       <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+       <div class="movements__date">3 days ago</div>
+       <div class="movements__value">${mov}€</div>
       </div>
     `;
 
@@ -146,7 +144,7 @@ btnLogin.addEventListener("click", function (e) {
 
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     //Display ui and message
-    labelWelcome.textContent = `welcome back, ${currentAccount.owner.split("")[0]}`;
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
     containerApp.style.opacity = 100;
 
     inputLoginUsername.value = inputLoginPin.value = "";

@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/png" href="./icon.png" />
 
     <link
-      href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -16,27 +16,33 @@
   </head>
   <body>
     <!-- TOP NAVIGATION -->
-    <nav>
-      <p class="welcome">Log in to get started</p>
-      <img src="logo.png" alt="Logo" class="logo" />
-      <form class="login">
+    <nav aria-label="Main navigation">
+      <div class="brand">
+        <img src="logo.png" alt="" class="logo" />
+        <div class="brand__name">Bankist<span>PERSONAL BANKING</span></div>
+      </div>
+      <p class="welcome">Sign in to your account</p>
+      <form class="login" aria-label="Account login">
         <input
           type="text"
-          placeholder="user"
+          placeholder="Username"
+          aria-label="Username"
+          autocomplete="username"
           class="login__input login__input--user"
         />
-        <!-- In practice, use type="password" -->
         <input
-          type="text"
+          type="password"
           placeholder="PIN"
+          aria-label="PIN"
+          autocomplete="current-password"
           maxlength="4"
           class="login__input login__input--pin"
         />
-        <button class="login__btn">&rarr;</button>
+        <button class="login__btn" type="submit" aria-label="Log in">&rarr;</button>
       </form>
     </nav>
 
-    <main class="app">
+    <main class="app" aria-label="Account dashboard">
       <!-- BALANCE -->
       <div class="balance">
         <div>
@@ -49,20 +55,26 @@
       </div>
 
       <!-- MOVEMENTS -->
-      <div class="movements">
-        <div class="movements__row">
-          <div class="movements__type movements__type--deposit">2 deposit</div>
-          <div class="movements__date">3 days ago</div>
-          <div class="movements__value">4 000€</div>
+      <section class="movements" aria-labelledby="activity-title">
+        <div class="activity-head">
+          <h2 id="activity-title">Recent activity</h2>
+          <span class="activity-head__caption">Latest transactions</span>
         </div>
-        <div class="movements__row">
-          <div class="movements__type movements__type--withdrawal">
-            1 withdrawal
+        <div class="movements__list">
+          <div class="movements__row">
+            <div class="movements__type movements__type--deposit">2 deposit</div>
+            <div class="movements__date">3 days ago</div>
+            <div class="movements__value">4 000€</div>
           </div>
-          <div class="movements__date">24/01/2037</div>
-          <div class="movements__value">-378€</div>
+          <div class="movements__row">
+            <div class="movements__type movements__type--withdrawal">
+              1 withdrawal
+            </div>
+            <div class="movements__date">24/01/2037</div>
+            <div class="movements__value">-378€</div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <!-- SUMMARY -->
       <div class="summary">
@@ -79,9 +91,9 @@
       <div class="operation operation--transfer">
         <h2>Transfer money</h2>
         <form class="form form--transfer">
-          <input type="text" class="form__input form__input--to" />
-          <input type="number" class="form__input form__input--amount" />
-          <button class="form__btn form__btn--transfer">&rarr;</button>
+          <input type="text" placeholder="Username" aria-label="Transfer recipient username" class="form__input form__input--to" />
+          <input type="number" placeholder="0.00" aria-label="Transfer amount" class="form__input form__input--amount" />
+          <button class="form__btn form__btn--transfer" type="submit" aria-label="Send transfer">&rarr;</button>
           <label class="form__label">Transfer to</label>
           <label class="form__label">Amount</label>
         </form>
@@ -91,8 +103,8 @@
       <div class="operation operation--loan">
         <h2>Request loan</h2>
         <form class="form form--loan">
-          <input type="number" class="form__input form__input--loan-amount" />
-          <button class="form__btn form__btn--loan">&rarr;</button>
+          <input type="number" placeholder="0.00" aria-label="Loan amount" class="form__input form__input--loan-amount" />
+          <button class="form__btn form__btn--loan" type="submit" aria-label="Request loan">&rarr;</button>
           <label class="form__label form__label--loan">Amount</label>
         </form>
       </div>
@@ -101,13 +113,15 @@
       <div class="operation operation--close">
         <h2>Close account</h2>
         <form class="form form--close">
-          <input type="text" class="form__input form__input--user" />
+          <input type="text" placeholder="Username" aria-label="Confirm username" class="form__input form__input--user" />
           <input
             type="password"
+            placeholder="PIN"
+            aria-label="Confirm PIN"
             maxlength="6"
             class="form__input form__input--pin"
           />
-          <button class="form__btn form__btn--close">&rarr;</button>
+          <button class="form__btn form__btn--close" type="submit" aria-label="Close account">&rarr;</button>
           <label class="form__label">Confirm user</label>
           <label class="form__label">Confirm PIN</label>
         </form>
