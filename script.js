@@ -60,19 +60,30 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
-const displayMovements = function (movements, sort = false) {
+const now = new Date();
+const day = `${now.getDate()}`.padStart(2, 0);
+const month = `${now.getMonth() + 1}`.padStart(2, 0);
+const year = now.getFullYear();
+const displayDate = `${day}/${month}/${year}`;
+
+const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = "";
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
 
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
 
+    const date = new Date((acc.movementsDates = [i]));
+
     const html = `
      <div class="movements__row">
        <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+        <div class="movements__date">${displayDate}</div>
        <div class="movements__date">3 days ago</div>
-       <div class="movements__value">${mov}€</div>
+       <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
 
@@ -93,19 +104,19 @@ const createUsernames = function (accs) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, val) => acc + val, 0);
-  labelBalance.textContent = acc.balance;
+  labelBalance.textContent = acc.balance.toFixed(2);
 };
 
 const calcDisplaySummary = function (acc) {
   const income = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, val) => acc + val, 0);
-  labelSumIn.textContent = income;
+  labelSumIn.textContent = income.toFixed(2);
 
   const out = acc.movements
     .filter((mov) => mov < 0)
     .reduce((acc, val) => acc + val, 0);
-  labelSumOut.textContent = out;
+  labelSumOut.textContent = out.toFixed(2);
 
   const interest = acc.movements
     .filter((mov) => mov > 0)
@@ -114,14 +125,14 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, val) => acc + val, 0);
-  labelSumInterest.textContent = interest;
+  labelSumInterest.textContent = interest.toFixed(2);
 };
 
 createUsernames(accounts);
 
 const updateUI = function (acc) {
   //Display movements
-  displayMovements(acc.movements);
+  displayMovements(acc);
 
   //Display balance
   calcDisplayBalance(acc);
@@ -142,10 +153,12 @@ btnLogin.addEventListener("click", function (e) {
   );
   // console.log(currentAccount);
 
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === +inputLoginPin.value) {
     //Display ui and message
     labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
     containerApp.style.opacity = 100;
+
+    labelDate.textContent = displayDate;
 
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
@@ -156,7 +169,7 @@ btnLogin.addEventListener("click", function (e) {
 
 btnTransfer.addEventListener("click", function (e) {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     (acc) => acc.username === inputTransferTo.value,
   );
@@ -179,7 +192,7 @@ btnTransfer.addEventListener("click", function (e) {
 btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = math.floor(inputLoanAmount.value);
 
   if (
     amount > 0 &&
@@ -202,10 +215,21 @@ btnClose.addEventListener("click", function (e) {
 
   if (
     inputCloseUsername.value === currentAccount.username &&
-    Number(inputClosePin.value) === currentAccount.pin
+    +inputClosePin.value === currentAccount.pin
   ) {
     const index = accounts.findIndex(
       (acc) => acc.username === currentAccount.username,
     );
   }
 });
+
+console.log(23 === 23.0);
+
+// fake always login
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
+
+console.log(displayDate);
+
+//day/month/year
